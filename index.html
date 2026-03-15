@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Treino Márcia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080612;
+    --surface: #10091f;
+    --surface2: #160d2b;
+    --purple: #9b5de5;
+    --purple-light: #c084fc;
+    --purple-dim: rgba(155,93,229,0.15);
+    --green: #06d6a0;
+    --green-dim: rgba(6,214,160,0.12);
+    --orange: #f77f00;
+    --orange-dim: rgba(247,127,0,0.12);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.1);
+    --pink: #f472b6;
+    --text: #f0e8ff;
+    --text-dim: #9b8fc0;
+    --text-muted: #5a4f7a;
+    --border: rgba(155,93,229,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 90px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(180deg, #1a0a3d 0%, var(--bg) 100%);
+    padding: 48px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(155,93,229,0.3) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-tag { font-size: 9px; letter-spacing: 4px; color: var(--purple-light); text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: #fff; line-height: 1.2; }
+  .header-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+  .bio-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 16px; }
+  .bio-card { background: rgba(155,93,229,0.15); border: 1px solid rgba(155,93,229,0.3); border-radius: 10px; padding: 10px 6px; text-align: center; }
+  .bio-val { font-size: 14px; font-weight: 700; color: var(--purple-light); }
+  .bio-lbl { font-size: 9px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.5px; }
+
+  /* NAV TABS */
+  .tabs { display: flex; background: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.06); position: sticky; top: 0; z-index: 100; overflow-x: auto; }
+  .tab-btn { flex-shrink: 0; padding: 13px 10px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn.active { color: var(--purple-light); border-bottom-color: var(--purple); }
+
+  /* CONTENT */
+  .content { padding: 16px; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* SECTION TITLE */
+  .sec-title { font-size: 10px; letter-spacing: 3px; color: var(--purple-light); text-transform: uppercase; margin-bottom: 12px; margin-top: 4px; }
+
+  /* PROGRESS BARS */
+  .prog-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+  .prog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .prog-label { font-size: 13px; font-weight: 600; }
+  .prog-vals { font-size: 11px; color: var(--text-dim); }
+  .prog-bar-bg { height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+  .prog-bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+  .prog-sub { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: var(--text-muted); }
+
+  /* CHART CARD */
+  .chart-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .chart-title { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 12px; }
+  .chart-wrap { position: relative; height: 180px; }
+
+  /* COMPARISON */
+  .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .comp-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; text-align: center; }
+  .comp-label { font-size: 9px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+  .comp-val { font-size: 26px; font-weight: 700; font-family: 'Playfair Display', serif; }
+  .comp-sub { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+  .comp-delta { font-size: 12px; font-weight: 600; margin-top: 6px; }
+
+  /* HISTORY TABLE */
+  .hist-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .hist-table th { color: var(--text-muted); font-weight: 500; padding: 8px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 10px; }
+  .hist-table td { padding: 10px 6px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-dim); }
+  .hist-table tr:last-child td { border-bottom: none; }
+  .hist-table .first-col { color: var(--text); font-weight: 500; }
+
+  /* FORM */
+  .form-card { background: rgba(155,93,229,0.08); border: 1px solid rgba(155,93,229,0.25); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+  .form-title { font-size: 13px; font-weight: 600; color: var(--purple-light); margin-bottom: 14px; }
+  .form-row { margin-bottom: 12px; }
+  .form-label { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; display: block; }
+  .form-input { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(155,93,229,0.3); border-radius: 8px; padding: 10px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; }
+  .form-input:focus { border-color: var(--purple); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-save { width: 100%; padding: 14px; background: linear-gradient(135deg, #7c3aed, #9b5de5); border: none; border-radius: 10px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 4px; letter-spacing: 0.5px; }
+  .btn-save:active { opacity: 0.85; }
+
+  /* MEDIDAS */
+  .med-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .med-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; }
+  .med-icon { font-size: 20px; margin-bottom: 6px; }
+  .med-name { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  .med-val { font-size: 22px; font-weight: 700; font-family: 'Playfair Display', serif; margin-top: 2px; }
+  .med-meta { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+  .med-delta-pos { color: #06d6a0; } 
+  .med-delta-neg { color: #f87171; }
+
+  /* ALERT BOX */
+  .alert-box { border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .alert-title { font-size: 10px; letter-spacing: 3px; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; }
+  .alert-item { font-size: 12px; line-height: 1.5; margin-bottom: 6px; padding-left: 4px; }
+
+  /* TREINO */
+  .week-strip { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; margin-bottom: 18px; }
+  .day-cell { border-radius: 8px; padding: 8px 2px; text-align: center; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); cursor: default; }
+  .day-cell.active { cursor: pointer; }
+  .day-cell .day-name { font-size: 8px; letter-spacing: 1px; color: var(--text-muted); }
+  .day-cell .day-letter { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-top: 3px; }
+  .session-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .sess-btn { flex: 1; padding: 12px 6px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.03); cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .sess-btn .s-label { font-size: 11px; font-weight: 700; }
+  .sess-btn .s-day { font-size: 9px; margin-top: 2px; }
+  .sess-btn .s-focus { font-size: 8px; margin-top: 1px; opacity: 0.7; }
+  .ex-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+  .ex-card.open { background: rgba(255,255,255,0.06); }
+  .ex-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .ex-icon { font-size: 22px; flex-shrink: 0; }
+  .ex-info { flex: 1; }
+  .ex-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .ex-meta { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+  .rpe-badge { font-size: 10px; font-weight: 700; border-radius: 6px; padding: 4px 8px; flex-shrink: 0; }
+  .ex-tip { display: none; margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: rgba(0,0,0,0.4); font-size: 12px; color: #d4c8f5; line-height: 1.65; border-left: 3px solid; }
+  .ex-card.open .ex-tip { display: block; }
+
+  /* NUTRI */
+  .nutri-card { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); align-items: flex-start; }
+  .nutri-card:last-child { border-bottom: none; }
+  .nutri-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+  .nutri-title { font-size: 13px; font-weight: 600; }
+  .nutri-val { font-size: 12px; margin: 3px 0; }
+  .nutri-tip { font-size: 11px; opacity: 0.65; }
+  .calc-box { background: var(--purple-dim); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-top: 12px; }
+  .calc-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .calc-row:last-child { border-bottom: none; }
+  .calc-row strong { color: var(--purple-light); }
+
+  /* CUIDADOS */
+  .care-item { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .care-mark { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .care-text { font-size: 12px; line-height: 1.5; }
+
+  .bottom-hint { text-align: center; padding: 20px 16px 8px; font-size: 10px; color: var(--text-muted); }
+
+
+  /* WATCH TAB */
+  .watch-hero { background: linear-gradient(135deg, #0f1f3d 0%, #0a1628 100%); border: 1px solid rgba(56,189,248,0.25); border-radius: 16px; padding: 20px; margin-bottom: 16px; position: relative; overflow: hidden; }
+  .watch-hero::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; background:radial-gradient(circle, rgba(56,189,248,0.2) 0%, transparent 70%); pointer-events:none; }
+  .watch-date { font-size: 10px; letter-spacing: 3px; color: #38bdf8; text-transform: uppercase; margin-bottom: 12px; }
+  .watch-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+  .watch-metric { text-align: center; background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px 6px; }
+  .watch-metric-icon { font-size: 20px; margin-bottom: 4px; }
+  .watch-metric-val { font-size: 20px; font-weight: 700; font-family: 'Playfair Display', serif; line-height: 1; }
+  .watch-metric-lbl { font-size: 9px; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+  .btn-fitness { width: 100%; padding: 14px; background: linear-gradient(135deg, #1d4ed8, #3b82f6); border: none; border-radius: 12px; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; letter-spacing: 0.3px; }
+  .btn-fitness:active { opacity: 0.85; }
+  .btn-saude { width: 100%; padding: 12px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.3); border-radius: 12px; color: #38bdf8; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 16px; }
+  .zone-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .zone-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .zone-info { flex: 1; }
+  .zone-name { font-size: 12px; font-weight: 600; }
+  .zone-range { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .zone-badge { font-size: 10px; color: var(--text-muted); background: rgba(255,255,255,0.05); border-radius: 6px; padding: 3px 8px; white-space: nowrap; }
+  .zone-bar-bg { height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; margin-top: 5px; overflow: hidden; }
+  .zone-bar-fill { height: 100%; border-radius: 3px; }
+  .watch-form { background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .watch-form-title { font-size: 13px; font-weight: 600; color: #38bdf8; margin-bottom: 14px; }
+  .watch-inp { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(56,189,248,0.25); border-radius: 8px; padding: 10px 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; }
+  .watch-inp:focus { border-color: #38bdf8; }
+  .btn-watch-save { width: 100%; padding: 13px; background: linear-gradient(135deg, #0ea5e9, #38bdf8); border: none; border-radius: 10px; color: #000; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+  .treino-hist-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+  .treino-hist-row:last-child { border-bottom: none; }
+  .fc-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+
+  /* toast */
+  .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #06d6a0; color: #000; font-size: 13px; font-weight: 600; padding: 10px 24px; border-radius: 20px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Programa Personalizado · 2026</div>
+  <h1>Treino &amp; Evolução<br>Márcia</h1>
+  <div class="header-sub">Condromalácia Patelar · Intermediária · Recomposição Corporal</div>
+  <div class="bio-grid">
+    <div class="bio-card"><div class="bio-val" id="hdr-peso">49,6kg</div><div class="bio-lbl">Peso</div></div>
+    <div class="bio-card"><div class="bio-val" id="hdr-gord">26,5%</div><div class="bio-lbl">Gordura</div></div>
+    <div class="bio-card"><div class="bio-val" id="hdr-musc">34kg</div><div class="bio-lbl">Músculo</div></div>
+    <div class="bio-card"><div class="bio-val">76pts</div><div class="bio-lbl">Score</div></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('evolucao',this)">📈 Evolução</button>
+  <button class="tab-btn" onclick="showTab('watch',this)">⌚ Watch</button>
+  <button class="tab-btn" onclick="showTab('registro',this)">✏️ Registrar</button>
+  <button class="tab-btn" onclick="showTab('treino',this)">💪 Treino</button>
+  <button class="tab-btn" onclick="showTab('nutri',this)">🥗 Nutrição</button>
+  <button class="tab-btn" onclick="showTab('cuidados',this)">⚠️ Cuidados</button>
+</div>
+
+<!-- =================== EVOLUÇÃO =================== -->
+<div id="tab-evolucao" class="tab-content active">
+<div class="content">
+
+  <div class="sec-title">🎯 Metas & Progresso Atual</div>
+
+  <!-- PROGRESS BARS -->
+  <div class="prog-card">
+    <div class="prog-header">
+      <div class="prog-label">⚖️ Peso</div>
+      <div class="prog-vals"><span id="prog-peso-atual">49,6</span> kg → meta <span>50,4</span> kg</div>
+    </div>
+    <div class="prog-bar-bg"><div class="prog-bar-fill" id="bar-peso" style="background:linear-gradient(90deg,#9b5de5,#c084fc);width:0%"></div></div>
+    <div class="prog-sub"><span>Início: 49,6 kg</span><span id="prog-peso-pct">—</span></div>
+  </div>
+
+  <div class="prog-card">
+    <div class="prog-header">
+      <div class="prog-label">🔥 % Gordura</div>
+      <div class="prog-vals"><span id="prog-gord-atual">26,5</span>% → meta <span>23,6</span>%</div>
+    </div>
+    <div class="prog-bar-bg"><div class="prog-bar-fill" id="bar-gord" style="background:linear-gradient(90deg,#f77f00,#fbbf24);width:0%"></div></div>
+    <div class="prog-sub"><span>Início: 26,5%</span><span id="prog-gord-pct">—</span></div>
+  </div>
+
+  <div class="prog-card">
+    <div class="prog-header">
+      <div class="prog-label">💪 Massa Muscular</div>
+      <div class="prog-vals"><span id="prog-musc-atual">34,0</span> kg → meta <span>36,3</span> kg</div>
+    </div>
+    <div class="prog-bar-bg"><div class="prog-bar-fill" id="bar-musc" style="background:linear-gradient(90deg,#06d6a0,#34d399);width:0%"></div></div>
+    <div class="prog-sub"><span>Início: 34,0 kg</span><span id="prog-musc-pct">—</span></div>
+  </div>
+
+  <!-- COMPARATIVO -->
+  <div class="sec-title" style="margin-top:20px">📊 Comparativo Início × Atual</div>
+  <div class="comp-grid">
+    <div class="comp-card">
+      <div class="comp-label">Peso</div>
+      <div class="comp-val" id="comp-peso" style="color:#c084fc">49,6</div>
+      <div class="comp-sub">kg atual</div>
+      <div class="comp-delta" id="delta-peso" style="color:var(--text-muted)">—</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-label">% Gordura</div>
+      <div class="comp-val" id="comp-gord" style="color:#f77f00">26,5</div>
+      <div class="comp-sub">% atual</div>
+      <div class="comp-delta" id="delta-gord" style="color:var(--text-muted)">—</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-label">Massa Muscular</div>
+      <div class="comp-val" id="comp-musc" style="color:#06d6a0">34,0</div>
+      <div class="comp-sub">kg atual</div>
+      <div class="comp-delta" id="delta-musc" style="color:var(--text-muted)">—</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-label">Cintura</div>
+      <div class="comp-val" id="comp-cin" style="color:#f472b6">—</div>
+      <div class="comp-sub">cm atual</div>
+      <div class="comp-delta" id="delta-cin" style="color:var(--text-muted)">—</div>
+    </div>
+  </div>
+
+  <!-- GRAFICOS -->
+  <div class="sec-title">📉 Gráficos de Evolução Semanal</div>
+
+  <div class="chart-card">
+    <div class="chart-title">⚖️ Peso (kg)</div>
+    <div class="chart-wrap"><canvas id="chartPeso"></canvas></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">🔥 % Gordura Corporal</div>
+    <div class="chart-wrap"><canvas id="chartGord"></canvas></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">💪 Massa Muscular (kg)</div>
+    <div class="chart-wrap"><canvas id="chartMusc"></canvas></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">📏 Medidas Corporais (cm)</div>
+    <div class="chart-wrap"><canvas id="chartMed"></canvas></div>
+  </div>
+
+  <!-- BIOIMPEDÂNCIA DETALHADA -->
+  <div class="sec-title" style="margin-top:4px">🔬 Bioimpedância Inicial — 07/03/2026</div>
+  <div class="chart-card" style="margin-bottom:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+      <div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05);border-right:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">PESO</div>
+        <div style="font-size:16px;font-weight:700;color:#c084fc">49,6 <span style="font-size:10px;font-weight:400">kg</span></div>
+        <div style="font-size:9px;color:var(--text-muted)">Padrão (42,9–58,0)</div>
+      </div>
+      <div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">MASSA GORDA</div>
+        <div style="font-size:16px;font-weight:700;color:#f77f00">13,1 <span style="font-size:10px;font-weight:400">kg</span></div>
+        <div style="font-size:9px;color:var(--text-muted)">26,5% · Padrão</div>
+      </div>
+      <div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05);border-right:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">MASSA MUSCULAR</div>
+        <div style="font-size:16px;font-weight:700;color:#06d6a0">34,0 <span style="font-size:10px;font-weight:400">kg</span></div>
+        <div style="font-size:9px;color:var(--text-muted)">68,7% · Padrão</div>
+      </div>
+      <div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">MÚSCULO ESQUELÉTICO</div>
+        <div style="font-size:16px;font-weight:700;color:#34d399">19,7 <span style="font-size:10px;font-weight:400">kg</span></div>
+        <div style="font-size:9px;color:var(--text-muted)">39,7% · Padrão</div>
+      </div>
+      <div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05);border-right:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">MASSA ÓSSEA</div>
+        <div style="font-size:16px;font-weight:700;color:#818cf8">2,4 <span style="font-size:10px;font-weight:400">kg</span></div>
+        <div style="font-size:9px;color:var(--text-muted)">4,8% · Padrão</div>
+      </div>
+      <div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">ÁGUA CORPORAL</div>
+        <div style="font-size:16px;font-weight:700;color:#38bdf8">26,7 <span style="font-size:10px;font-weight:400">kg</span></div>
+        <div style="font-size:9px;color:var(--text-muted)">53,9% · Padrão</div>
+      </div>
+      <div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05);border-right:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">IMC</div>
+        <div style="font-size:16px;font-weight:700;color:#c084fc">20,6</div>
+        <div style="font-size:9px;color:var(--text-muted)">Padrão</div>
+      </div>
+      <div style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">IDADE CORPORAL</div>
+        <div style="font-size:16px;font-weight:700;color:#06d6a0">42 <span style="font-size:10px;font-weight:400">anos</span></div>
+        <div style="font-size:9px;color:var(--text-muted)">Idade real: 44 ✨</div>
+      </div>
+      <div style="padding:8px 10px;border-right:1px solid rgba(255,255,255,0.05)">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">TMB</div>
+        <div style="font-size:16px;font-weight:700;color:#fbbf24">1.158 <span style="font-size:10px;font-weight:400">kcal</span></div>
+        <div style="font-size:9px;color:var(--text-muted)">Taxa metabólica basal</div>
+      </div>
+      <div style="padding:8px 10px">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px">GORDURA VISCERAL</div>
+        <div style="font-size:16px;font-weight:700;color:#06d6a0">5</div>
+        <div style="font-size:9px;color:var(--text-muted)">Excelente (meta: &lt;9)</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 12px;background:rgba(6,214,160,0.08);border-radius:8px;border-left:3px solid #06d6a0">
+      <div style="font-size:11px;color:#a7f3d0;line-height:1.6">
+        🏆 <strong>Score corporal: 76/100</strong> · WHR: 0,80 · Gordura subcutânea: 18,9% · SMI: 6,2 kg/m²<br>
+        Equilíbrio corporal: Superior ✓ · Inferior ✓ · Parte superior ✓
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div class="sec-title" style="margin-top:4px">🗂️ Histórico de Registros</div>
+  <div class="chart-card" style="overflow-x:auto;padding:12px 10px">
+    <table class="hist-table">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Peso</th>
+          <th>Gord%</th>
+          <th>Musc</th>
+          <th>Cin</th>
+          <th>Quad</th>
+        </tr>
+      </thead>
+      <tbody id="hist-body">
+        <tr><td colspan="6" style="color:var(--text-muted);font-size:11px;padding:16px 6px;text-align:center">Nenhum registro ainda.<br>Vá em ✏️ Registrar para começar!</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- =================== REGISTRO =================== -->
+<div id="tab-registro" class="tab-content">
+<div class="content">
+
+  <div class="form-card">
+    <div class="form-title">✏️ Novo Registro Semanal</div>
+
+    <div class="form-row">
+      <label class="form-label">📅 Data</label>
+      <input class="form-input" type="date" id="inp-data">
+    </div>
+
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">⚖️ Peso (kg)</label>
+        <input class="form-input" type="number" step="0.1" placeholder="ex: 49.6" id="inp-peso">
+      </div>
+      <div class="form-row">
+        <label class="form-label">🔥 % Gordura</label>
+        <input class="form-input" type="number" step="0.1" placeholder="ex: 26.5" id="inp-gord">
+      </div>
+      <div class="form-row">
+        <label class="form-label">💪 Músculo (kg)</label>
+        <input class="form-input" type="number" step="0.1" placeholder="ex: 34.0" id="inp-musc">
+      </div>
+      <div class="form-row">
+        <label class="form-label">📏 Cintura (cm)</label>
+        <input class="form-input" type="number" step="0.5" placeholder="ex: 72" id="inp-cin">
+      </div>
+      <div class="form-row">
+        <label class="form-label">📏 Quadril (cm)</label>
+        <input class="form-input" type="number" step="0.5" placeholder="ex: 94" id="inp-quad">
+      </div>
+      <div class="form-row">
+        <label class="form-label">📏 Coxa (cm)</label>
+        <input class="form-input" type="number" step="0.5" placeholder="ex: 54" id="inp-coxa">
+      </div>
+    </div>
+
+    <button class="btn-save" onclick="saveRecord()">💾 Salvar Registro</button>
+  </div>
+
+  <div class="alert-box" style="background:rgba(155,93,229,0.08);border:1px solid rgba(155,93,229,0.2)">
+    <div class="alert-title" style="color:var(--purple-light)">💡 Dica de medição</div>
+    <div class="alert-item" style="color:#c4b5fd">· Sempre meça no mesmo horário (manhã, em jejum)</div>
+    <div class="alert-item" style="color:#c4b5fd">· Peso: após ir ao banheiro, antes de comer</div>
+    <div class="alert-item" style="color:#c4b5fd">· Cintura: na altura do umbigo, sem sugar a barriga</div>
+    <div class="alert-item" style="color:#c4b5fd">· Quadril: na parte mais larga</div>
+    <div class="alert-item" style="color:#c4b5fd">· Coxa: a 15cm acima do joelho</div>
+  </div>
+
+  <div style="margin-top:8px">
+    <button onclick="clearAll()" style="width:100%;padding:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#f87171;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer">🗑️ Apagar todos os registros</button>
+  </div>
+
+</div>
+</div>
+
+<!-- =================== WATCH =================== -->
+<div id="tab-watch" class="tab-content">
+<div class="content">
+
+  <!-- HERO HOJE -->
+  <div class="watch-hero">
+    <div class="watch-date" id="watch-today-label">hoje · carregando...</div>
+    <div class="watch-metrics">
+      <div class="watch-metric">
+        <div class="watch-metric-icon">🔥</div>
+        <div class="watch-metric-val" id="w-cal-hoje" style="color:#f77f00">—</div>
+        <div class="watch-metric-lbl">kcal treino</div>
+      </div>
+      <div class="watch-metric">
+        <div class="watch-metric-icon">❤️</div>
+        <div class="watch-metric-val" id="w-fc-hoje" style="color:#f472b6">—</div>
+        <div class="watch-metric-lbl">FC média</div>
+      </div>
+      <div class="watch-metric">
+        <div class="watch-metric-icon">⏱️</div>
+        <div class="watch-metric-val" id="w-dur-hoje" style="color:#38bdf8">—</div>
+        <div class="watch-metric-lbl">min treino</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px;text-align:center">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">FC Máxima</div>
+        <div style="font-size:18px;font-weight:700;color:#f87171;margin-top:2px" id="w-fc-max-hoje">—</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px;text-align:center">
+        <div style="font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">FC Mínima</div>
+        <div style="font-size:18px;font-weight:700;color:#34d399;margin-top:2px" id="w-fc-min-hoje">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÕES APPLE -->
+  <button class="btn-fitness" onclick="openFitness()">
+    <span style="font-size:18px">🏃</span> Abrir app Fitness (Apple)
+  </button>
+  <button class="btn-saude" onclick="openSaude()">
+    ❤️ Abrir app Saúde (Health)
+  </button>
+
+  <!-- ZONAS DE FC -->
+  <div class="sec-title">❤️ Suas Zonas de Frequência Cardíaca</div>
+  <div class="chart-card" style="margin-bottom:16px">
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px">FC Máxima estimada: <strong style="color:#f0e8ff">176 bpm</strong> (220 − 44 anos)</div>
+    <div class="zone-row">
+      <div class="zone-dot" style="background:#38bdf8"></div>
+      <div class="zone-info">
+        <div class="zone-name" style="color:#38bdf8">Zona 1 — Aquecimento</div>
+        <div class="zone-range">88–106 bpm · 50–60% FCmax</div>
+        <div class="zone-bar-bg"><div class="zone-bar-fill" style="background:#38bdf8;width:55%"></div></div>
+      </div>
+      <div class="zone-badge">Aquecimento<br>Recuperação</div>
+    </div>
+    <div class="zone-row">
+      <div class="zone-dot" style="background:#34d399"></div>
+      <div class="zone-info">
+        <div class="zone-name" style="color:#34d399">Zona 2 — Queima de gordura</div>
+        <div class="zone-range">106–123 bpm · 60–70% FCmax</div>
+        <div class="zone-bar-bg"><div class="zone-bar-fill" style="background:#34d399;width:65%"></div></div>
+      </div>
+      <div class="zone-badge">🔥 Ideal para<br>recomposição</div>
+    </div>
+    <div class="zone-row">
+      <div class="zone-dot" style="background:#fbbf24"></div>
+      <div class="zone-info">
+        <div class="zone-name" style="color:#fbbf24">Zona 3 — Aeróbico</div>
+        <div class="zone-range">123–141 bpm · 70–80% FCmax</div>
+        <div class="zone-bar-bg"><div class="zone-bar-fill" style="background:#fbbf24;width:75%"></div></div>
+      </div>
+      <div class="zone-badge">Condicio-<br>namento</div>
+    </div>
+    <div class="zone-row">
+      <div class="zone-dot" style="background:#f77f00"></div>
+      <div class="zone-info">
+        <div class="zone-name" style="color:#f77f00">Zona 4 — Anaeróbico</div>
+        <div class="zone-range">141–158 bpm · 80–90% FCmax</div>
+        <div class="zone-bar-bg"><div class="zone-bar-fill" style="background:#f77f00;width:85%"></div></div>
+      </div>
+      <div class="zone-badge">Alta<br>intensidade</div>
+    </div>
+    <div class="zone-row" style="margin-bottom:0">
+      <div class="zone-dot" style="background:#f87171"></div>
+      <div class="zone-info">
+        <div class="zone-name" style="color:#f87171">Zona 5 — Máximo</div>
+        <div class="zone-range">158–176 bpm · 90–100% FCmax</div>
+        <div class="zone-bar-bg"><div class="zone-bar-fill" style="background:#f87171;width:95%"></div></div>
+      </div>
+      <div class="zone-badge">⚠️ Evitar com<br>joelho</div>
+    </div>
+    <div style="margin-top:14px;padding:10px 12px;background:rgba(52,211,153,0.08);border-radius:8px;border-left:3px solid #34d399;font-size:11px;color:#a7f3d0;line-height:1.6">
+      💡 Para recomposição corporal, o ideal é passar a maior parte do treino de musculação na <strong>Zona 3 (123–141 bpm)</strong>. O Watch mostra isso em tempo real!
+    </div>
+  </div>
+
+  <!-- REGISTRO PÓS-TREINO -->
+  <div class="sec-title">✏️ Registrar Treino (do Fitness)</div>
+  <div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.15);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#93c5fd;line-height:1.6">
+    📱 <strong>Como usar:</strong> Abra o app Fitness → toque no treino → copie os valores abaixo para registrar no histórico.
+  </div>
+  <div class="watch-form">
+    <div class="watch-form-title">⌚ Dados do Treino</div>
+    <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <label class="form-label" style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block">📅 Data</label>
+        <input class="watch-inp" type="date" id="w-inp-data">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block">⏱️ Duração (min)</label>
+        <input class="watch-inp" type="number" placeholder="ex: 55" id="w-inp-dur">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block">🔥 Calorias (kcal)</label>
+        <input class="watch-inp" type="number" placeholder="ex: 320" id="w-inp-cal">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block">❤️ FC Média (bpm)</label>
+        <input class="watch-inp" type="number" placeholder="ex: 128" id="w-inp-fc">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block">❤️‍🔥 FC Máxima</label>
+        <input class="watch-inp" type="number" placeholder="ex: 152" id="w-inp-fc-max">
+      </div>
+      <div>
+        <label class="form-label" style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block">💚 FC Mínima</label>
+        <input class="watch-inp" type="number" placeholder="ex: 98" id="w-inp-fc-min">
+      </div>
+      <div style="grid-column:1/-1">
+        <label class="form-label" style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block">💪 Sessão</label>
+        <select class="watch-inp" id="w-inp-sessao" style="appearance:auto">
+          <option value="">Selecione...</option>
+          <option value="A">Sessão A — Glúteo + Posterior</option>
+          <option value="B">Sessão B — Quadríceps</option>
+          <option value="C">Sessão C — Funcional</option>
+          <option value="outro">Outro treino</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-watch-save" onclick="saveWatchRecord()">💾 Salvar Treino</button>
+  </div>
+
+  <!-- GRÁFICOS WATCH -->
+  <div class="sec-title">📊 Histórico de Treinos</div>
+  <div class="chart-card">
+    <div class="chart-title">🔥 Calorias por Treino (kcal)</div>
+    <div class="chart-wrap"><canvas id="chartCal"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">❤️ Frequência Cardíaca por Treino (bpm)</div>
+    <div class="chart-wrap"><canvas id="chartFC"></canvas></div>
+  </div>
+
+  <!-- HISTÓRICO TREINOS -->
+  <div class="sec-title">🗂️ Últimos Treinos</div>
+  <div class="chart-card" style="padding:12px 14px">
+    <div id="watch-hist-list">
+      <div style="color:var(--text-muted);font-size:12px;text-align:center;padding:16px 0">Nenhum treino registrado ainda.</div>
+    </div>
+  </div>
+
+  <!-- DICA FC REPOUSO -->
+  <div class="alert-box" style="background:rgba(244,114,182,0.07);border:1px solid rgba(244,114,182,0.25);margin-top:4px">
+    <div class="alert-title" style="color:#f472b6">💡 FC de Repouso — Acompanhe pelo Watch</div>
+    <div style="font-size:12px;color:#fbcfe8;line-height:1.65">
+      O Apple Watch mede sua FC de repouso automaticamente 24h. À medida que você melhora o condicionamento, esse número <strong>cai</strong> — é um excelente indicador de evolução cardiovascular.<br><br>
+      <strong>Referência para mulheres 40–49 anos:</strong><br>
+      🟢 Excelente: abaixo de 61 bpm<br>
+      🟡 Bom: 62–65 bpm<br>
+      🟠 Médio: 66–69 bpm<br>
+      🔴 Abaixo da média: acima de 70 bpm
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- =================== TREINO =================== -->
+<div id="tab-treino" class="tab-content">
+<div class="content">
+
+  <div class="week-strip">
+    <div class="day-cell active" onclick="showSession(0)" style="background:rgba(155,93,229,0.18);border-color:rgba(155,93,229,0.5)">
+      <div class="day-name" style="color:#c084fc">SEG</div>
+      <div class="day-letter" style="color:#fff">A</div>
+    </div>
+    <div class="day-cell"><div class="day-name">TER</div><div class="day-letter">—</div></div>
+    <div class="day-cell active" onclick="showSession(1)" style="background:rgba(6,214,160,0.1);border-color:rgba(6,214,160,0.35)">
+      <div class="day-name" style="color:#06d6a0">QUA</div>
+      <div class="day-letter" style="color:#06d6a0">B</div>
+    </div>
+    <div class="day-cell"><div class="day-name">QUI</div><div class="day-letter">—</div></div>
+    <div class="day-cell active" onclick="showSession(2)" style="background:rgba(247,127,0,0.1);border-color:rgba(247,127,0,0.35)">
+      <div class="day-name" style="color:#f77f00">SEX</div>
+      <div class="day-letter" style="color:#f77f00">C</div>
+    </div>
+    <div class="day-cell"><div class="day-name">SAB</div><div class="day-letter">—</div></div>
+    <div class="day-cell"><div class="day-name">DOM</div><div class="day-letter">—</div></div>
+  </div>
+
+  <div class="session-tabs">
+    <button class="sess-btn" id="sbtn-0" onclick="showSession(0)" style="border-color:rgba(155,93,229,0.6);background:rgba(155,93,229,0.15)">
+      <div class="s-label" style="color:#c084fc">SESSÃO A</div>
+      <div class="s-day" style="color:#9b8fc0">Segunda</div>
+      <div class="s-focus" style="color:#7c6aaa">Glúteo + Post.</div>
+    </button>
+    <button class="sess-btn" id="sbtn-1" onclick="showSession(1)">
+      <div class="s-label" style="color:#5a4f7a">SESSÃO B</div>
+      <div class="s-day" style="color:#5a4f7a">Quarta</div>
+      <div class="s-focus" style="color:#3d3360">Quadríceps</div>
+    </button>
+    <button class="sess-btn" id="sbtn-2" onclick="showSession(2)">
+      <div class="s-label" style="color:#5a4f7a">SESSÃO C</div>
+      <div class="s-day" style="color:#5a4f7a">Sexta</div>
+      <div class="s-focus" style="color:#3d3360">Funcional</div>
+    </button>
+  </div>
+
+  <div id="session-0">
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🍑</span><div class="ex-info"><div class="ex-name">Hip Thrust com Barra</div><div class="ex-meta">4×10-12 · 90s descanso</div></div><div class="rpe-badge" style="background:rgba(155,93,229,0.2);border:1px solid #9b5de5;color:#c084fc">RPE 7-8</div></div><div class="ex-tip" style="border-color:#9b5de5">💡 Principal exercício! Quadril-dominante — não sobrecarrega o joelho. Empurre o quadril até ficar paralelo ao chão. Glúteo contraído no topo por 1 segundo.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🏋️</span><div class="ex-info"><div class="ex-name">Stiff (Terra Romeno)</div><div class="ex-meta">3×10-12 · 75s descanso</div></div><div class="rpe-badge" style="background:rgba(155,93,229,0.2);border:1px solid #9b5de5;color:#c084fc">RPE 7</div></div><div class="ex-tip" style="border-color:#9b5de5">💡 Trabalha posterior de coxa sem pressão patelar. Levíssima flexão no joelho. Barra próxima às pernas, costas retas.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">⚡</span><div class="ex-info"><div class="ex-name">Abdução de Quadril (máquina)</div><div class="ex-meta">3×15 · 60s descanso</div></div><div class="rpe-badge" style="background:rgba(155,93,229,0.2);border:1px solid #9b5de5;color:#c084fc">RPE 6</div></div><div class="ex-tip" style="border-color:#9b5de5">💡 Ativa glúteo médio — fundamental para alinhar o joelho e reduzir dor patelar. Movimento lento e controlado.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🔄</span><div class="ex-info"><div class="ex-name">Elevação Pélvica Unilateral</div><div class="ex-meta">3×12 cada · 60s descanso</div></div><div class="rpe-badge" style="background:rgba(155,93,229,0.2);border:1px solid #9b5de5;color:#c084fc">RPE 6</div></div><div class="ex-tip" style="border-color:#9b5de5">💡 Versão leve do hip thrust com uma perna. Equaliza desequilíbrios entre lados. Pé apoiado no banco.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">💪</span><div class="ex-info"><div class="ex-name">Flexora — Leg Curl Deitado</div><div class="ex-meta">3×12 · 60s descanso</div></div><div class="rpe-badge" style="background:rgba(155,93,229,0.2);border:1px solid #9b5de5;color:#c084fc">RPE 6</div></div><div class="ex-tip" style="border-color:#9b5de5">💡 Isola posterior de coxa sem compressão do joelho. Amplitude confortável — não force a extensão total.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🦵</span><div class="ex-info"><div class="ex-name">Panturrilha em Pé (Gêmeos)</div><div class="ex-meta">3×15-20 · 45s descanso</div></div><div class="rpe-badge" style="background:rgba(155,93,229,0.2);border:1px solid #9b5de5;color:#c084fc">RPE 5</div></div><div class="ex-tip" style="border-color:#9b5de5">💡 Totalmente seguro. Estabiliza tornozelo e melhora a biomecânica do membro inferior.</div></div>
+  </div>
+
+  <div id="session-1" style="display:none">
+    <div class="alert-box" style="background:rgba(247,127,0,0.08);border:1px solid rgba(247,127,0,0.3);margin-bottom:10px"><div class="alert-title" style="color:#f77f00;margin-bottom:4px">⚠️ Amplitude sempre parcial nesta sessão</div><div style="font-size:11px;color:#fed7aa">Se sentir dor, reduza amplitude ou substitua o exercício.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🏆</span><div class="ex-info"><div class="ex-name">Agachamento Goblet (máx 60°)</div><div class="ex-meta">3×10 · 90s descanso</div></div><div class="rpe-badge" style="background:rgba(6,214,160,0.15);border:1px solid #06d6a0;color:#06d6a0">RPE 6-7</div></div><div class="ex-tip" style="border-color:#06d6a0">💡 Com halter no peito. Nunca além de 60° de flexão! Desça lento (3s), sobe rápido. Foco em controle total.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🔩</span><div class="ex-info"><div class="ex-name">Leg Press 45° (amplitude parcial)</div><div class="ex-meta">3×12 · 90s descanso</div></div><div class="rpe-badge" style="background:rgba(6,214,160,0.15);border:1px solid #06d6a0;color:#06d6a0">RPE 6-7</div></div><div class="ex-tip" style="border-color:#06d6a0">💡 Pés ALTOS e afastados na plataforma. Amplitude: joelho a ~80° apenas. Carga moderada sempre!</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🎯</span><div class="ex-info"><div class="ex-name">Cadeira Extensora (60°→0°)</div><div class="ex-meta">3×15 · 60s descanso</div></div><div class="rpe-badge" style="background:rgba(6,214,160,0.15);border:1px solid #06d6a0;color:#06d6a0">RPE 5-6</div></div><div class="ex-tip" style="border-color:#06d6a0">💡 SOMENTE os últimos 60° de extensão. Ativa VMO — estabilizador da patela. Peso leve, execução perfeita!</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🚶</span><div class="ex-info"><div class="ex-name">Avanço Estacionário (Lunge)</div><div class="ex-meta">3×10 cada · 75s descanso</div></div><div class="rpe-badge" style="background:rgba(6,214,160,0.15);border:1px solid #06d6a0;color:#06d6a0">RPE 6</div></div><div class="ex-tip" style="border-color:#06d6a0">💡 Joelho da frente alinhado com o 2° dedo do pé. Desça só até o conforto. Sem salto, sem impacto.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">↔️</span><div class="ex-info"><div class="ex-name">Abdução + Adução Sentada</div><div class="ex-meta">2×15 cada · 45s descanso</div></div><div class="rpe-badge" style="background:rgba(6,214,160,0.15);border:1px solid #06d6a0;color:#06d6a0">RPE 5</div></div><div class="ex-tip" style="border-color:#06d6a0">💡 Estabiliza o quadril. Complementar — leve e controlado.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">💫</span><div class="ex-info"><div class="ex-name">Elevação de Calcanhar Sentada</div><div class="ex-meta">3×20 · 45s descanso</div></div><div class="rpe-badge" style="background:rgba(6,214,160,0.15);border:1px solid #06d6a0;color:#06d6a0">RPE 5</div></div><div class="ex-tip" style="border-color:#06d6a0">💡 Sóleo sentado: zero impacto no joelho. Melhora circulação venosa da perna.</div></div>
+  </div>
+
+  <div id="session-2" style="display:none">
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🏋️</span><div class="ex-info"><div class="ex-name">Terra Sumô (carga moderada)</div><div class="ex-meta">3×8-10 · 90s descanso</div></div><div class="rpe-badge" style="background:rgba(247,127,0,0.15);border:1px solid #f77f00;color:#f77f00">RPE 7</div></div><div class="ex-tip" style="border-color:#f77f00">💡 Pés bem afastados e abertos. Reduz flexão de joelho. Muito eficaz para glúteo e posterior.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">⚖️</span><div class="ex-info"><div class="ex-name">Agachamento Búlgaro (curto)</div><div class="ex-meta">3×8 cada · 90s descanso</div></div><div class="rpe-badge" style="background:rgba(247,127,0,0.15);border:1px solid #f77f00;color:#f77f00">RPE 7</div></div><div class="ex-tip" style="border-color:#f77f00">💡 Se houver desconforto, substitua por step-up lateral. Amplitude curta. Pé traseiro elevado no banco.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🐚</span><div class="ex-info"><div class="ex-name">Clamshell com Mini Band</div><div class="ex-meta">3×20 cada · 45s descanso</div></div><div class="rpe-badge" style="background:rgba(247,127,0,0.15);border:1px solid #f77f00;color:#f77f00">RPE 5</div></div><div class="ex-tip" style="border-color:#f77f00">💡 Deitada de lado com band acima do joelho. Exercício TERAPÊUTICO para condromalácia. Faça devagar.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">📦</span><div class="ex-info"><div class="ex-name">Step-up Lateral (~15cm)</div><div class="ex-meta">3×10 cada · 60s descanso</div></div><div class="rpe-badge" style="background:rgba(247,127,0,0.15);border:1px solid #f77f00;color:#f77f00">RPE 6</div></div><div class="ex-tip" style="border-color:#f77f00">💡 Sobe lateralmente no step baixo. Ativa VMO e glúteo. Altura baixa = joelho protegido.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🌉</span><div class="ex-info"><div class="ex-name">Ponte Glútea no Chão</div><div class="ex-meta">3×15 · 60s descanso</div></div><div class="rpe-badge" style="background:rgba(247,127,0,0.15);border:1px solid #f77f00;color:#f77f00">RPE 5</div></div><div class="ex-tip" style="border-color:#f77f00">💡 Finalização suave. Aperte o glúteo forte no topo por 2 segundos. Sem sobrecarga articular.</div></div>
+    <div class="ex-card" onclick="toggleEx(this)"><div class="ex-row"><span class="ex-icon">🛡️</span><div class="ex-info"><div class="ex-name">Prancha Lateral (Core)</div><div class="ex-meta">3×30s cada · 45s descanso</div></div><div class="rpe-badge" style="background:rgba(247,127,0,0.15);border:1px solid #f77f00;color:#f77f00">RPE 6</div></div><div class="ex-tip" style="border-color:#f77f00">💡 Core forte = joelho protegido! Não deixe o quadril cair.</div></div>
+  </div>
+
+  <div class="alert-box" style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.25);margin-top:8px">
+    <div class="alert-title" style="color:#f87171">🦵 Protocolo Joelho</div>
+    <div class="alert-item" style="color:#fca5a5">· Sem agachamento além de 90°</div>
+    <div class="alert-item" style="color:#fca5a5">· Parar se sentir dor aguda</div>
+    <div class="alert-item" style="color:#fca5a5">· Aquecimento: 5-8min bicicleta leve</div>
+  </div>
+
+</div>
+</div>
+
+<!-- =================== NUTRIÇÃO =================== -->
+<div id="tab-nutri" class="tab-content">
+<div class="content">
+  <div class="alert-box" style="background:var(--green-dim);border:1px solid rgba(6,214,160,0.25)">
+    <div class="alert-title" style="color:var(--green)">Meta: +2,3kg músculo / -1,5kg gordura</div>
+    <div class="nutri-card"><span class="nutri-icon">🥩</span><div><div class="nutri-title" style="color:var(--green)">Proteína</div><div class="nutri-val" style="color:#a7f3d0">90–100g/dia (1,8–2,0g/kg)</div><div class="nutri-tip" style="color:#6b9e8a">Carnes, ovos, frango, atum. Distribua em 4–5 refeições de 20–30g.</div></div></div>
+    <div class="nutri-card"><span class="nutri-icon">🫙</span><div><div class="nutri-title" style="color:var(--green)">Colágeno Hidrolisado</div><div class="nutri-val" style="color:#a7f3d0">10g/dia + vitamina C</div><div class="nutri-tip" style="color:#6b9e8a">Saúde da cartilagem! Tomar em jejum ou pós-treino com suco de laranja.</div></div></div>
+    <div class="nutri-card"><span class="nutri-icon">🐟</span><div><div class="nutri-title" style="color:var(--green)">Ômega-3</div><div class="nutri-val" style="color:#a7f3d0">2–3g/dia (EPA+DHA)</div><div class="nutri-tip" style="color:#6b9e8a">Antiinflamatório articular — essencial para o joelho.</div></div></div>
+    <div class="nutri-card"><span class="nutri-icon">💧</span><div><div class="nutri-title" style="color:var(--green)">Hidratação</div><div class="nutri-val" style="color:#a7f3d0">Mínimo 2,5L/dia</div><div class="nutri-tip" style="color:#6b9e8a">A cartilagem é 70% água. Hidratação é terapia!</div></div></div>
+    <div class="nutri-card" style="border-bottom:none"><span class="nutri-icon">🔥</span><div><div class="nutri-title" style="color:var(--green)">Déficit Calórico</div><div class="nutri-val" style="color:#a7f3d0">100–200 kcal abaixo da TDEE</div><div class="nutri-tip" style="color:#6b9e8a">Déficit LEVE — cortar muito impede ganho muscular.</div></div></div>
+  </div>
+  <div class="calc-box">
+    <div style="font-size:10px;letter-spacing:3px;color:var(--purple-light);margin-bottom:10px">🧮 REFERÊNCIA CALÓRICA</div>
+    <div class="calc-row"><span style="color:var(--text-dim)">TMB (Bioimpedância)</span><strong>1.158 kcal</strong></div>
+    <div class="calc-row"><span style="color:var(--text-dim)">TDEE (3x/semana treino)</span><strong>~1.620 kcal</strong></div>
+    <div class="calc-row"><span style="color:var(--text-dim)">Alvo recomposição</span><strong>1.420–1.500 kcal</strong></div>
+  </div>
+</div>
+</div>
+
+<!-- =================== CUIDADOS =================== -->
+<div id="tab-cuidados" class="tab-content">
+<div class="content">
+  <div class="alert-box" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.25)">
+    <div class="alert-title" style="color:#f87171">❌ Evitar Completamente</div>
+    <div class="care-item"><span class="care-mark">✗</span><span class="care-text" style="color:#fca5a5">Corrida e pular corda</span></div>
+    <div class="care-item"><span class="care-mark">✗</span><span class="care-text" style="color:#fca5a5">Agachamento profundo (além de 90°)</span></div>
+    <div class="care-item"><span class="care-mark">✗</span><span class="care-text" style="color:#fca5a5">Leg press com amplitude total e carga alta</span></div>
+    <div class="care-item"><span class="care-mark">✗</span><span class="care-text" style="color:#fca5a5">Hack squat</span></div>
+    <div class="care-item"><span class="care-mark">✗</span><span class="care-text" style="color:#fca5a5">Qualquer exercício que cause dor no joelho</span></div>
+  </div>
+  <div class="alert-box" style="background:var(--green-dim);border:1px solid rgba(6,214,160,0.25)">
+    <div class="alert-title" style="color:var(--green)">✅ Recomendado</div>
+    <div class="care-item"><span class="care-mark" style="color:var(--green)">✓</span><span class="care-text" style="color:#a7f3d0">Tênis com bom amortecimento</span></div>
+    <div class="care-item"><span class="care-mark" style="color:var(--green)">✓</span><span class="care-text" style="color:#a7f3d0">Gelo 15min no joelho se houver inchaço</span></div>
+    <div class="care-item"><span class="care-mark" style="color:var(--green)">✓</span><span class="care-text" style="color:#a7f3d0">Aquecimento: 5–8min bicicleta ergométrica leve</span></div>
+    <div class="care-item"><span class="care-mark" style="color:var(--green)">✓</span><span class="care-text" style="color:#a7f3d0">Fisioterapia 1–2x/semana</span></div>
+    <div class="care-item"><span class="care-mark" style="color:var(--green)">✓</span><span class="care-text" style="color:#a7f3d0">Progressão de carga gradual</span></div>
+  </div>
+  <div class="alert-box" style="background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.25)">
+    <div class="alert-title" style="color:#fbbf24">🩺 Aviso Importante</div>
+    <div style="font-size:12px;color:#fde68a;line-height:1.7">Valide com seu <strong>ortopedista ou fisioterapeuta</strong> antes de iniciar. Se sentir dor aguda — <strong>pare imediatamente</strong>.</div>
+  </div>
+</div>
+</div>
+
+<div class="bottom-hint">Toque em cada exercício para ver a dica · Dados salvos no dispositivo</div>
+<div class="toast" id="toast">✅ Registro salvo!</div>
+
+<script>
+// ============ STORAGE ============
+const STORAGE_KEY = 'marcia_registros_v1';
+
+function loadRecords() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { return []; }
+}
+function saveRecords(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+// ============ METAS ============
+const METAS = { peso: { ini: 49.6, alvo: 50.4 }, gord: { ini: 26.5, alvo: 23.6 }, musc: { ini: 34.0, alvo: 36.3 } };
+
+// ============ PURE CANVAS CHARTS ============
+function drawLineChart(canvasId, datasets, labels, opts) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const W = canvas.offsetWidth || 340;
+  const H = 180;
+  canvas.width = W * 2; canvas.height = H * 2;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+  const pad = { t: 16, r: 16, b: 32, l: 44 };
+  const cw = W - pad.l - pad.r;
+  const ch = H - pad.t - pad.b;
+  ctx.clearRect(0, 0, W, H);
+
+  // collect all valid values
+  let allVals = [];
+  datasets.forEach(ds => ds.data.forEach(v => { if (v !== null && v !== undefined) allVals.push(v); }));
+  if (allVals.length === 0) {
+    ctx.fillStyle = '#5a4f7a'; ctx.font = '11px DM Sans,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sem dados ainda', W/2, H/2);
+    return;
+  }
+  let minV = Math.min(...allVals), maxV = Math.max(...allVals);
+  const range = maxV - minV || 1;
+  minV -= range * 0.1; maxV += range * 0.1;
+
+  const n = labels.length;
+  const xPos = i => pad.l + (n < 2 ? cw/2 : (i / (n-1)) * cw);
+  const yPos = v => pad.t + ch - ((v - minV) / (maxV - minV)) * ch;
+
+  // grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (i/4)*ch;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l+cw, y); ctx.stroke();
+    const val = maxV - (i/4)*(maxV-minV);
+    ctx.fillStyle = '#5a4f7a'; ctx.font = '9px DM Sans,sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(val.toFixed(1), pad.l-4, y+3);
+  }
+
+  // x labels
+  ctx.fillStyle = '#5a4f7a'; ctx.font = '9px DM Sans,sans-serif'; ctx.textAlign = 'center';
+  labels.forEach((lbl, i) => {
+    if (n <= 8 || i % Math.ceil(n/6) === 0)
+      ctx.fillText(lbl, xPos(i), H - 6);
+  });
+
+  // legend if multiple datasets
+  if (datasets.length > 1) {
+    let lx = pad.l;
+    datasets.forEach(ds => {
+      ctx.fillStyle = ds.color; ctx.beginPath(); ctx.arc(lx+4, pad.t-4, 4, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#9b8fc0'; ctx.font = '9px DM Sans,sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText(ds.label, lx+10, pad.t-1);
+      lx += ctx.measureText(ds.label).width + 22;
+    });
+  }
+
+  // datasets
+  datasets.forEach(ds => {
+    const pts = ds.data.map((v, i) => v !== null && v !== undefined ? {x: xPos(i), y: yPos(v), v} : null);
+    const valid = pts.filter(Boolean);
+    if (valid.length === 0) return;
+
+    // fill
+    if (ds.fill !== false) {
+      ctx.beginPath();
+      valid.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.lineTo(valid[valid.length-1].x, pad.t+ch);
+      ctx.lineTo(valid[0].x, pad.t+ch);
+      ctx.closePath();
+      ctx.fillStyle = ds.color + '22'; ctx.fill();
+    }
+
+    // line
+    ctx.beginPath(); ctx.strokeStyle = ds.color; ctx.lineWidth = ds.lineWidth || 2.5;
+    if (ds.dash) ctx.setLineDash(ds.dash); else ctx.setLineDash([]);
+    valid.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // dots
+    valid.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+      ctx.fillStyle = ds.color; ctx.fill();
+      ctx.strokeStyle = '#080612'; ctx.lineWidth = 1.5; ctx.stroke();
+    });
+  });
+}
+
+function drawBarChart(canvasId, data, labels, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const W = canvas.offsetWidth || 340;
+  const H = 180;
+  canvas.width = W * 2; canvas.height = H * 2;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+  const pad = { t: 16, r: 12, b: 32, l: 44 };
+  const cw = W - pad.l - pad.r;
+  const ch = H - pad.t - pad.b;
+  ctx.clearRect(0, 0, W, H);
+
+  const vals = data.map(v => v || 0);
+  const maxV = Math.max(...vals, 1);
+  const n = labels.length;
+
+  // grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (i/4)*ch;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l+cw, y); ctx.stroke();
+    ctx.fillStyle = '#5a4f7a'; ctx.font = '9px DM Sans,sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(Math.round(maxV - (i/4)*maxV), pad.l-4, y+3);
+  }
+
+  // bars
+  const bw = Math.max(4, (cw / n) * 0.6);
+  const gap = cw / n;
+  vals.forEach((v, i) => {
+    const x = pad.l + i*gap + gap*0.2;
+    const bh = (v / maxV) * ch;
+    const y = pad.t + ch - bh;
+    const grad = ctx.createLinearGradient(0, y, 0, y+bh);
+    grad.addColorStop(0, color); grad.addColorStop(1, color+'55');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    const r = Math.min(4, bw/2);
+    ctx.moveTo(x+r, y); ctx.lineTo(x+bw-r, y);
+    ctx.quadraticCurveTo(x+bw, y, x+bw, y+r);
+    ctx.lineTo(x+bw, y+bh); ctx.lineTo(x, y+bh);
+    ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.fill();
+    // x label
+    ctx.fillStyle = '#5a4f7a'; ctx.font = '9px DM Sans,sans-serif'; ctx.textAlign = 'center';
+    if (n <= 8 || i % Math.ceil(n/6) === 0)
+      ctx.fillText(labels[i], x + bw/2, H-6);
+  });
+}
+
+function initCharts() {
+  const recs = loadRecords();
+  const labels = recs.map(r => r.data ? r.data.slice(5) : '—');
+
+  drawLineChart('chartPeso', [{label:'Peso', color:'#c084fc', data: recs.map(r=>r.peso||null)}], labels);
+  drawLineChart('chartGord', [{label:'Gordura%', color:'#f77f00', data: recs.map(r=>r.gord||null)}], labels);
+  drawLineChart('chartMusc', [{label:'Músculo', color:'#06d6a0', data: recs.map(r=>r.musc||null)}], labels);
+  drawLineChart('chartMed', [
+    {label:'Cintura', color:'#f472b6', data: recs.map(r=>r.cin||null), fill:false},
+    {label:'Quadril', color:'#818cf8', data: recs.map(r=>r.quad||null), fill:false},
+    {label:'Coxa',   color:'#fbbf24', data: recs.map(r=>r.coxa||null), fill:false},
+  ], labels);
+}
+
+// ============ PROGRESS BARS ============
+function updateProgress() {
+  const recs = loadRecords();
+  const last = recs.length > 0 ? recs[recs.length-1] : null;
+
+  // Peso: meta é chegar em 50.4
+  const curPeso = last && last.peso ? last.peso : METAS.peso.ini;
+  const pPeso = Math.min(100, Math.max(0, ((curPeso - METAS.peso.ini) / (METAS.peso.alvo - METAS.peso.ini)) * 100));
+  document.getElementById('bar-peso').style.width = pPeso + '%';
+  document.getElementById('prog-peso-atual').textContent = curPeso.toFixed(1);
+  document.getElementById('prog-peso-pct').textContent = pPeso.toFixed(0) + '% da meta';
+
+  // Gordura: meta é reduzir
+  const curGord = last && last.gord ? last.gord : METAS.gord.ini;
+  const pGord = Math.min(100, Math.max(0, ((METAS.gord.ini - curGord) / (METAS.gord.ini - METAS.gord.alvo)) * 100));
+  document.getElementById('bar-gord').style.width = pGord + '%';
+  document.getElementById('prog-gord-atual').textContent = curGord.toFixed(1);
+  document.getElementById('prog-gord-pct').textContent = pGord.toFixed(0) + '% da meta';
+
+  // Músculo
+  const curMusc = last && last.musc ? last.musc : METAS.musc.ini;
+  const pMusc = Math.min(100, Math.max(0, ((curMusc - METAS.musc.ini) / (METAS.musc.alvo - METAS.musc.ini)) * 100));
+  document.getElementById('bar-musc').style.width = pMusc + '%';
+  document.getElementById('prog-musc-atual').textContent = curMusc.toFixed(1);
+  document.getElementById('prog-musc-pct').textContent = pMusc.toFixed(0) + '% da meta';
+}
+
+// ============ COMPARATIVO ============
+function updateComp() {
+  const recs = loadRecords();
+  const last = recs.length > 0 ? recs[recs.length-1] : null;
+
+  function delta(cur, ini, inverse) {
+    const d = cur - ini;
+    if (d === 0) return '<span style="color:#5a4f7a">sem alteração</span>';
+    const good = inverse ? d < 0 : d > 0;
+    const sign = d > 0 ? '+' : '';
+    return `<span style="color:${good?'#06d6a0':'#f87171'}">${sign}${d.toFixed(1)}</span>`;
+  }
+
+  if (last) {
+    if (last.peso) { document.getElementById('comp-peso').textContent = last.peso.toFixed(1); document.getElementById('delta-peso').innerHTML = delta(last.peso, METAS.peso.ini, false); }
+    if (last.gord) { document.getElementById('comp-gord').textContent = last.gord.toFixed(1); document.getElementById('delta-gord').innerHTML = delta(last.gord, METAS.gord.ini, true); }
+    if (last.musc) { document.getElementById('comp-musc').textContent = last.musc.toFixed(1); document.getElementById('delta-musc').innerHTML = delta(last.musc, METAS.musc.ini, false); }
+    if (last.cin) { document.getElementById('comp-cin').textContent = last.cin.toFixed(1); document.getElementById('delta-cin').innerHTML = delta(last.cin, 0, true) + ' cm'; }
+    // header
+    if (last.peso) document.getElementById('hdr-peso').textContent = last.peso.toFixed(1)+'kg';
+    if (last.gord) document.getElementById('hdr-gord').textContent = last.gord.toFixed(1)+'%';
+    if (last.musc) document.getElementById('hdr-musc').textContent = last.musc.toFixed(1)+'kg';
+  }
+}
+
+// ============ HISTORY TABLE ============
+function updateHistory() {
+  const recs = loadRecords();
+  const tbody = document.getElementById('hist-body');
+  if (recs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="color:var(--text-muted);font-size:11px;padding:16px 6px;text-align:center">Nenhum registro ainda.<br>Vá em ✏️ Registrar para começar!</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...recs].reverse().map(r => `
+    <tr>
+      <td class="first-col">${r.data || '—'}${r.scoreCorporal ? ' <span style="font-size:9px;color:#c084fc;background:rgba(155,93,229,0.2);border-radius:4px;padding:1px 5px">bioimp</span>' : ''}</td>
+      <td>${r.peso ? r.peso+'kg' : '—'}</td>
+      <td>${r.gord ? r.gord+'%' : '—'}</td>
+      <td>${r.musc ? r.musc+'kg' : '—'}</td>
+      <td>${r.cin ? r.cin+'cm' : '—'}</td>
+      <td>${r.quad ? r.quad+'cm' : '—'}</td>
+    </tr>
+  `).join('');
+}
+
+// ============ SAVE ============
+function saveRecord() {
+  const data = document.getElementById('inp-data').value;
+  const peso = parseFloat(document.getElementById('inp-peso').value) || null;
+  const gord = parseFloat(document.getElementById('inp-gord').value) || null;
+  const musc = parseFloat(document.getElementById('inp-musc').value) || null;
+  const cin  = parseFloat(document.getElementById('inp-cin').value) || null;
+  const quad = parseFloat(document.getElementById('inp-quad').value) || null;
+  const coxa = parseFloat(document.getElementById('inp-coxa').value) || null;
+
+  if (!data && !peso && !gord && !musc) { alert('Preencha pelo menos a data e um valor!'); return; }
+
+  const recs = loadRecords();
+  recs.push({ data: data || new Date().toISOString().slice(0,10), peso, gord, musc, cin, quad, coxa });
+  saveRecords(recs);
+
+  // limpar campos
+  ['inp-data','inp-peso','inp-gord','inp-musc','inp-cin','inp-quad','inp-coxa'].forEach(id => document.getElementById(id).value = '');
+
+  // toast
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+
+  refreshAll();
+}
+
+function clearAll() {
+  if (confirm('Apagar TODOS os registros? Esta ação não pode ser desfeita.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    refreshAll();
+  }
+}
+
+function refreshAll() {
+  updateProgress();
+  updateComp();
+  updateHistory();
+  initCharts();
+}
+
+// ============ TABS ============
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'evolucao') setTimeout(initCharts, 50);
+  if (id === 'watch') setTimeout(updateWatchUI, 50);
+}
+
+// ============ TREINO ============
+function showSession(idx) {
+  [0,1,2].forEach(i => document.getElementById('session-'+i).style.display = 'none');
+  document.getElementById('session-'+idx).style.display = 'block';
+  const colors = [
+    {border:'rgba(155,93,229,0.6)',bg:'rgba(155,93,229,0.15)',label:'#c084fc',day:'#9b8fc0',focus:'#7c6aaa'},
+    {border:'rgba(6,214,160,0.5)',bg:'rgba(6,214,160,0.1)',label:'#06d6a0',day:'#06d6a0',focus:'#059669'},
+    {border:'rgba(247,127,0,0.5)',bg:'rgba(247,127,0,0.1)',label:'#f77f00',day:'#f77f00',focus:'#ea580c'},
+  ];
+  [0,1,2].forEach(i => {
+    const btn = document.getElementById('sbtn-'+i);
+    const c = i === idx ? colors[i] : {border:'rgba(255,255,255,0.07)',bg:'rgba(255,255,255,0.03)',label:'#5a4f7a',day:'#5a4f7a',focus:'#3d3360'};
+    btn.style.borderColor = c.border; btn.style.background = c.bg;
+    btn.querySelector('.s-label').style.color = c.label;
+    btn.querySelector('.s-day').style.color = c.day;
+    btn.querySelector('.s-focus').style.color = c.focus;
+  });
+  document.querySelectorAll('.ex-card').forEach(c => c.classList.remove('open'));
+}
+
+function toggleEx(card) { card.classList.toggle('open'); }
+
+
+
+// ============ DADOS REAIS DO APPLE WATCH ============
+const WATCH_DATA_REAL = [{"data":"12/02","data_full":"12/02/2026","tipo":"Outro","cal":null,"fc":null,"fcMax":null,"fcMin":null,"dur":null,"passos":null,"fcRep":60.0,"sono":6.0,"sonoRem":1.3},{"data":"12/02","data_full":"12/02/2026","tipo":"Caminhada","cal":601.6,"fc":81.1,"fcMax":98.7,"fcMin":68.9,"dur":105,"passos":772,"fcRep":60.0,"sono":6.0,"sonoRem":1.3},{"data":"13/02","data_full":"13/02/2026","tipo":"Ciclismo","cal":48.0,"fc":76.1,"fcMax":84.6,"fcMin":72.9,"dur":12,"passos":11,"fcRep":null,"sono":4.9,"sonoRem":1.4},{"data":"13/02","data_full":"13/02/2026","tipo":"Caminhada","cal":14.7,"fc":66.3,"fcMax":69.0,"fcMin":64.0,"dur":82,"passos":null,"fcRep":null,"sono":4.9,"sonoRem":1.4},{"data":"13/02","data_full":"13/02/2026","tipo":"Ciclismo","cal":231.4,"fc":75.9,"fcMax":83.2,"fcMin":69.9,"dur":45,"passos":410,"fcRep":null,"sono":4.9,"sonoRem":1.4},{"data":"14/02","data_full":"14/02/2026","tipo":"Caminhada","cal":1121.6,"fc":88.0,"fcMax":111.2,"fcMin":75.5,"dur":91,"passos":2383,"fcRep":59.0,"sono":8.2,"sonoRem":2.3},{"data":"15/02","data_full":"15/02/2026","tipo":"Caminhada","cal":1096.2,"fc":80.0,"fcMax":98.1,"fcMin":68.2,"dur":97,"passos":979,"fcRep":60.0,"sono":8.8,"sonoRem":2.1},{"data":"17/02","data_full":"17/02/2026","tipo":"Caminhada","cal":1554.8,"fc":78.5,"fcMax":95.6,"fcMin":66.6,"dur":136,"passos":1307,"fcRep":57.0,"sono":6.7,"sonoRem":1.6},{"data":"18/02","data_full":"18/02/2026","tipo":"Caminhada","cal":1049.0,"fc":79.1,"fcMax":107.1,"fcMin":64.1,"dur":136,"passos":3039,"fcRep":61.0,"sono":8.5,"sonoRem":1.8},{"data":"19/02","data_full":"19/02/2026","tipo":"Caminhada","cal":881.9,"fc":78.7,"fcMax":98.0,"fcMin":65.9,"dur":77,"passos":792,"fcRep":58.0,"sono":5.8,"sonoRem":1.2},{"data":"21/02","data_full":"21/02/2026","tipo":"Caminhada","cal":1359.4,"fc":87.6,"fcMax":133.8,"fcMin":71.6,"dur":100,"passos":2539,"fcRep":55.0,"sono":6.4,"sonoRem":1.7},{"data":"21/02","data_full":"21/02/2026","tipo":"Caminhada","cal":57.8,"fc":79.4,"fcMax":81.0,"fcMin":78.0,"dur":75,"passos":219,"fcRep":55.0,"sono":6.4,"sonoRem":1.7},{"data":"21/02","data_full":"21/02/2026","tipo":"Caminhada Indoor","cal":null,"fc":70.0,"fcMax":71.0,"fcMin":66.0,"dur":118,"passos":null,"fcRep":55.0,"sono":6.4,"sonoRem":1.7},{"data":"21/02","data_full":"21/02/2026","tipo":"Caminhada Indoor","cal":2.1,"fc":62.9,"fcMax":67.0,"fcMin":62.0,"dur":72,"passos":20,"fcRep":55.0,"sono":6.4,"sonoRem":1.7},{"data":"21/02","data_full":"21/02/2026","tipo":"Caminhada Indoor","cal":29.8,"fc":66.3,"fcMax":69.0,"fcMin":65.0,"dur":67,"passos":155,"fcRep":55.0,"sono":6.4,"sonoRem":1.7},{"data":"22/02","data_full":"22/02/2026","tipo":"Caminhada","cal":4849.8,"fc":71.5,"fcMax":94.0,"fcMin":58.1,"dur":385,"passos":6127,"fcRep":53.0,"sono":8.2,"sonoRem":1.6},{"data":"24/02","data_full":"24/02/2026","tipo":"Ciclismo","cal":22.8,"fc":84.0,"fcMax":85.0,"fcMin":84.0,"dur":74,"passos":8,"fcRep":67.0,"sono":6.8,"sonoRem":2.3},{"data":"24/02","data_full":"24/02/2026","tipo":"Caminhada","cal":24.9,"fc":105.8,"fcMax":131.1,"fcMin":86.7,"dur":12,"passos":null,"fcRep":67.0,"sono":6.8,"sonoRem":2.3},{"data":"24/02","data_full":"24/02/2026","tipo":"Ciclismo","cal":345.4,"fc":79.6,"fcMax":82.0,"fcMin":59.0,"dur":64,"passos":22,"fcRep":67.0,"sono":6.8,"sonoRem":2.3},{"data":"26/02","data_full":"26/02/2026","tipo":"Caminhada","cal":733.8,"fc":89.6,"fcMax":113.1,"fcMin":74.5,"dur":75,"passos":1719,"fcRep":58.0,"sono":6.3,"sonoRem":1.7},{"data":"28/02","data_full":"28/02/2026","tipo":"Outro","cal":433.2,"fc":92.0,"fcMax":110.0,"fcMin":82.7,"dur":38,"passos":302,"fcRep":54.0,"sono":8.0,"sonoRem":1.8},{"data":"28/02","data_full":"28/02/2026","tipo":"Caminhada","cal":82.8,"fc":77.5,"fcMax":85.9,"fcMin":72.3,"dur":17,"passos":660,"fcRep":54.0,"sono":8.0,"sonoRem":1.8},{"data":"28/02","data_full":"28/02/2026","tipo":"Caminhada Indoor","cal":47.1,"fc":67.7,"fcMax":70.0,"fcMin":63.0,"dur":64,"passos":216,"fcRep":54.0,"sono":8.0,"sonoRem":1.8},{"data":"28/02","data_full":"28/02/2026","tipo":"Caminhada Indoor","cal":36.0,"fc":67.9,"fcMax":71.0,"fcMin":58.0,"dur":118,"passos":225,"fcRep":54.0,"sono":8.0,"sonoRem":1.8},{"data":"28/02","data_full":"28/02/2026","tipo":"Ciclismo","cal":4.3,"fc":77.1,"fcMax":79.0,"fcMin":73.0,"dur":88,"passos":18,"fcRep":54.0,"sono":8.0,"sonoRem":1.8},{"data":"01/03","data_full":"01/03/2026","tipo":"Caminhada","cal":1502.9,"fc":74.2,"fcMax":88.5,"fcMin":64.8,"dur":134,"passos":1581,"fcRep":67.0,"sono":7.7,"sonoRem":1.5},{"data":"05/03","data_full":"05/03/2026","tipo":"Caminhada","cal":834.5,"fc":85.9,"fcMax":103.3,"fcMin":71.3,"dur":75,"passos":1599,"fcRep":60.0,"sono":6.3,"sonoRem":1.4},{"data":"07/03","data_full":"07/03/2026","tipo":"Caminhada","cal":1627.0,"fc":86.1,"fcMax":103.1,"fcMin":65.5,"dur":142,"passos":1419,"fcRep":69.0,"sono":8.0,"sonoRem":2.5},{"data":"08/03","data_full":"08/03/2026","tipo":"Outro","cal":1374.3,"fc":88.2,"fcMax":110.4,"fcMin":74.3,"dur":131,"passos":2953,"fcRep":58.0,"sono":9.3,"sonoRem":2.3},{"data":"12/03","data_full":"12/03/2026","tipo":"Caminhada","cal":603.9,"fc":89.5,"fcMax":101.8,"fcMin":77.0,"dur":53,"passos":693,"fcRep":63.0,"sono":5.8,"sonoRem":1.4},{"data":"14/03","data_full":"14/03/2026","tipo":"Caminhada","cal":161.4,"fc":79.0,"fcMax":87.7,"fcMin":71.8,"dur":14,"passos":107,"fcRep":62.0,"sono":7.6,"sonoRem":2.2}];
+// ============ WATCH STORAGE ============
+const WATCH_KEY = 'marcia_watch_v1';
+function loadWatchRecords() { try { return JSON.parse(localStorage.getItem(WATCH_KEY)) || []; } catch(e) { return []; } }
+function saveWatchRecords(arr) { localStorage.setItem(WATCH_KEY, JSON.stringify(arr)); }
+
+// ============ WATCH LINKS ============
+function openFitness() { window.location.href = 'x-apple-fitness://'; setTimeout(() => { window.location.href = 'https://www.apple.com/ios/fitness-plus/'; }, 1500); }
+function openSaude() { window.location.href = 'x-apple-health://'; }
+
+// ============ FC ZONE LABEL ============
+function getZone(fc) {
+  if (!fc) return { label: '—', color: '#5a4f7a' };
+  if (fc < 106) return { label: 'Zona 1 – Aquec.', color: '#38bdf8' };
+  if (fc < 123) return { label: 'Zona 2 – Gordura 🔥', color: '#34d399' };
+  if (fc < 141) return { label: 'Zona 3 – Aeróbico', color: '#fbbf24' };
+  if (fc < 158) return { label: 'Zona 4 – Anaeróbico', color: '#f77f00' };
+  return { label: 'Zona 5 – Máximo ⚠️', color: '#f87171' };
+}
+
+// ============ SAVE WATCH RECORD ============
+function saveWatchRecord() {
+  const data     = document.getElementById('w-inp-data').value;
+  const dur      = parseFloat(document.getElementById('w-inp-dur').value) || null;
+  const cal      = parseFloat(document.getElementById('w-inp-cal').value) || null;
+  const fc       = parseFloat(document.getElementById('w-inp-fc').value) || null;
+  const fcMax    = parseFloat(document.getElementById('w-inp-fc-max').value) || null;
+  const fcMin    = parseFloat(document.getElementById('w-inp-fc-min').value) || null;
+  const sessao   = document.getElementById('w-inp-sessao').value || null;
+
+  if (!data) { alert('Informe a data do treino!'); return; }
+
+  const recs = loadWatchRecords();
+  recs.push({ data, dur, cal, fc, fcMax, fcMin, sessao });
+  saveWatchRecords(recs);
+
+  // clear
+  ['w-inp-data','w-inp-dur','w-inp-cal','w-inp-fc','w-inp-fc-max','w-inp-fc-min'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('w-inp-sessao').value = '';
+  document.getElementById('w-inp-data').value = new Date().toISOString().slice(0,10);
+
+  const t = document.getElementById('toast');
+  t.textContent = '⌚ Treino salvo!';
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); t.textContent = '✅ Registro salvo!'; }, 2000);
+
+  updateWatchUI();
+}
+
+// ============ UPDATE WATCH UI ============
+function updateWatchUI() {
+  // Combine real Watch data + manual entries
+  const manual = loadWatchRecords();
+  const allRecs = [...WATCH_DATA_REAL, ...manual];
+  // Convert data_full to ISO for today check
+  const recs = allRecs.map(r => ({
+    ...r,
+    data: r.data_full ? r.data_full.split('/').slice(0,2).join('/') : r.data,
+    _iso: r.data_full ? r.data_full.split('/').reverse().join('-') : r.data
+  })).sort((a,b) => (a._iso||'').localeCompare(b._iso||''));
+  const today = new Date().toISOString().slice(0,10);
+
+  // update today label
+  const el = document.getElementById('watch-today-label');
+  if (el) el.textContent = 'hoje · ' + new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long' });
+
+  // today's data
+  const todayRec = [...recs].reverse().find(r => (r._iso === today || r.data === today));
+  document.getElementById('w-cal-hoje').textContent   = todayRec?.cal   ? todayRec.cal + ' kcal'  : '—';
+  document.getElementById('w-fc-hoje').textContent    = todayRec?.fc    ? todayRec.fc + ' bpm'    : '—';
+  document.getElementById('w-dur-hoje').textContent   = todayRec?.dur   ? todayRec.dur + ' min'   : '—';
+  document.getElementById('w-fc-max-hoje').textContent = todayRec?.fcMax ? todayRec.fcMax + ' bpm' : '—';
+  document.getElementById('w-fc-min-hoje').textContent = todayRec?.fcMin ? todayRec.fcMin + ' bpm' : '—';
+
+  // Charts
+  const labels = recs.map(r => r.data ? r.data.slice(5) : '—');
+
+    drawBarChart('chartCal', recs.map(r => r.cal || 0), labels, '#f77f00');
+  drawLineChart('chartFC', [
+    {label:'FC Máx',  color:'#f87171', data: recs.map(r=>r.fcMax||null), fill:false, dash:[4,3], lineWidth:1.5},
+    {label:'FC Méd',  color:'#f472b6', data: recs.map(r=>r.fc||null),    fill:true,  lineWidth:2.5},
+    {label:'FC Mín',  color:'#34d399', data: recs.map(r=>r.fcMin||null), fill:false, dash:[4,3], lineWidth:1.5},
+  ], labels);
+
+  // History list
+  const listEl = document.getElementById('watch-hist-list');
+  if (recs.length === 0) {
+    listEl.innerHTML = '<div style="color:var(--text-muted);font-size:12px;text-align:center;padding:16px 0">Nenhum treino registrado ainda.</div>';
+    return;
+  }
+  const sessNames = { A: 'Sessão A', B: 'Sessão B', C: 'Sessão C', outro: 'Outro' };
+  listEl.innerHTML = [...recs].reverse().slice(0, 10).map(r => {
+    const zone = getZone(r.fc);
+    return `<div class="treino-hist-row">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:#f0e8ff">${r.data || '—'}${r.sessao ? ' · <span style="color:#a78bfa">' + (sessNames[r.sessao]||r.sessao) + '</span>' : ''}</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">
+          ${r.dur ? r.dur+'min' : ''} ${r.cal ? '· 🔥'+r.cal+'kcal' : ''}
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;font-weight:600;color:${zone.color}">
+          <span class="fc-indicator" style="background:${zone.color}"></span>${r.fc ? r.fc+' bpm' : '—'}
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px">${zone.label}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============ PRÉ-CARGA BIOIMPEDÂNCIA ============
+function seedInitialData() {
+  const recs = loadRecords();
+  // Só insere se ainda não existe registro do dia 07/03/2026
+  const jaExiste = recs.some(r => r.data === '2026-03-07');
+  if (!jaExiste) {
+    // Dados exatos extraídos da bioimpedância Fitdays — 07/03/2026
+    recs.unshift({
+      data:  '2026-03-07',
+      peso:  49.6,   // Peso corporal (kg)
+      gord:  26.5,   // Taxa de gordura corporal (%)
+      musc:  34.0,   // Massa muscular total (kg)
+      cin:   null,   // Cintura — não informada na bioimp
+      quad:  null,   // Quadril — não informada na bioimp
+      coxa:  null,   // Coxa — não informada na bioimp
+      // Dados extras registrados para referência futura:
+      massaGorda:       13.1,  // kg
+      massaOssea:        2.4,  // kg
+      massaProteica:     7.3,  // kg
+      aguaCorporal:     26.7,  // kg / 53.9%
+      musculoEsqueletico: 19.7, // kg
+      imc:              20.6,
+      idadeCorporal:    42,
+      tmb:              1158,  // kcal
+      gorduraVisceral:   5,
+      gorduraSubcutanea: 18.9, // %
+      whr:              0.80,
+      smi:              6.2,   // kg/m²
+      pesoCorporalSemGordura: 36.4, // kg
+      scoreCorporal:    76,    // /100
+    });
+    saveRecords(recs);
+  }
+}
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', () => {
+  seedInitialData();
+  document.getElementById('inp-data').value = new Date().toISOString().slice(0,10);
+  if (document.getElementById('w-inp-data')) document.getElementById('w-inp-data').value = new Date().toISOString().slice(0,10);
+  refreshAll();
+  initCharts();
+  updateWatchUI();
+});
+</script>
+</body>
+</html>
